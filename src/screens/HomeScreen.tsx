@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { signOut } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../firebase';
 import { getBasvurular, getSonuclar } from '../storage';
 import { Basvuru, Sonuc } from '../types';
@@ -44,7 +45,12 @@ export default function HomeScreen() {
             { text: 'İptal', style: 'cancel' },
           ]),
       },
-      { text: 'Çıkış Yap', style: 'destructive', onPress: () => signOut(auth) },
+      {
+        text: 'Çıkış Yap', style: 'destructive', onPress: async () => {
+          await AsyncStorage.clear();
+          signOut(auth);
+        },
+      },
       { text: 'İptal', style: 'cancel' },
     ]);
   }

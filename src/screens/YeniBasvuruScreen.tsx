@@ -174,8 +174,8 @@ export default function YeniBasvuruScreen() {
       SONUCLAR.find(sn => sn.key === sonuc)?.label ?? sonuc,
       'Açıklama (isteğe bağlı)',
       async (aciklama) => {
-        if (aciklama === null) return;
-        await aktarToSonuc(existing!.id, sonuc, aciklama ?? '', mod ?? 'bilirkisi');
+        if (aciklama === null || aciklama === undefined) return;
+        await aktarToSonuc(existing!.id, sonuc, aciklama, existing?.mod ?? mod ?? 'bilirkisi');
         nav.goBack();
       },
       'plain-text', '', 'default'
