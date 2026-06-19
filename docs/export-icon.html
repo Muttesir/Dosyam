@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Export Icon</title>
+  <style>
+    body { background: #222; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 20px; font-family: sans-serif; color: white; }
+    canvas { border-radius: 20px; }
+    button { background: #C9A84C; color: #111; border: none; padding: 12px 28px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; }
+    button:hover { background: #E2BA5A; }
+    p { color: #888; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <p>1024×1024 App Store icon</p>
+  <canvas id="c" width="1024" height="1024"></canvas>
+  <button onclick="download()">PNG olarak indir (1024×1024)</button>
+  <p>İndirilen dosyayı <strong>assets/icon.png</strong> olarak kaydet</p>
+
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, 1024, 1024);
+    };
+    img.src = 'logo.svg';
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'icon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
