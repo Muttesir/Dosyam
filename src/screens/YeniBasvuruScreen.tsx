@@ -164,7 +164,10 @@ export default function YeniBasvuruScreen() {
   function onAktar() {
     if (!existing) return;
     Alert.alert('Sonuçlandır', 'Hangi sonuçla aktarılsın?', [
-      ...SONUCLAR.map(sn => ({ text: sn.label, onPress: () => showAciklamaPrompt(sn.key) })),
+      ...SONUCLAR.map(sn => ({
+        text: sn.label,
+        onPress: () => setTimeout(() => showAciklamaPrompt(sn.key), 300),
+      })),
       { text: 'İptal', style: 'cancel' },
     ]);
   }
@@ -175,8 +178,14 @@ export default function YeniBasvuruScreen() {
       'Açıklama (isteğe bağlı)',
       async (aciklama) => {
         if (aciklama === null || aciklama === undefined) return;
-        await aktarToSonuc(existing!.id, sonuc, aciklama, existing?.mod ?? mod ?? 'bilirkisi');
-        nav.goBack();
+        try {
+          setSaving(true);
+          await aktarToSonuc(existing!.id, sonuc, aciklama, existing?.mod ?? mod ?? 'bilirkisi');
+          nav.goBack();
+        } catch (e: any) {
+          setSaving(false);
+          Alert.alert('Hata', e?.message ?? 'Sonuçlandırma başarısız. Tekrar deneyin.');
+        }
       },
       'plain-text', '', 'default'
     );
