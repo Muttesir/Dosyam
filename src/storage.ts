@@ -114,11 +114,12 @@ export async function aktarToSonuc(
     if (!b) return;
   }
   await addSonuc({
-    ad: b.ad, telefon: b.telefon, tarih: b.tarih,
-    konu: b.konu, talep: b.talep, ucret: b.ucret,
+    ad: b.ad, telefon: b.telefon ?? '', tarih: b.tarih ?? '',
+    konu: b.konu, talep: b.talep ?? '', ucret: b.ucret ?? '',
     sonuc, aciklama, kaynak_id: basvuruId,
-    esasNo: b.esasNo, mahkeme: b.mahkeme,
     mod: mod ?? 'bilirkisi',
+    ...(b.esasNo  ? { esasNo:  b.esasNo  } : {}),
+    ...(b.mahkeme ? { mahkeme: b.mahkeme } : {}),
   });
   await deleteBasvuru(basvuruId);
 }
