@@ -62,7 +62,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <Text style={s.eyebrow}>{eyebrow}</Text>
-          <Text style={s.logo}>İŞ TAKİP</Text>
+          <Text style={s.logo}>DOSYAM</Text>
         </View>
         <View style={s.headerRight}>
           <TouchableOpacity style={s.themeBtn} onPress={toggleTheme}>
@@ -173,7 +173,7 @@ function BilirkisiDashboard({ basvurular, sonuclar, nav, C, s, DURUM_B, ODEME_B,
           </View>
         )}
 
-        {basvurular.length === 0 && sonuclar.length === 0 && <EmptyState s={s} />}
+        {basvurular.length === 0 && sonuclar.length === 0 && <EmptyState s={s} mod="bilirkisi" />}
         <View style={{ height: 32 }} />
       </ScrollView>
     </SafeAreaView>
@@ -276,7 +276,7 @@ function AvukatDashboard({ basvurular, sonuclar, nav, C, s, DURUM_B, ODEME_B, he
           </View>
         )}
 
-        {basvurular.length === 0 && sonuclar.length === 0 && <EmptyState s={s} />}
+        {basvurular.length === 0 && sonuclar.length === 0 && <EmptyState s={s} mod="avukat" />}
         <View style={{ height: 32 }} />
       </ScrollView>
     </SafeAreaView>
@@ -340,12 +340,12 @@ function KpiMoney({ label, value, color, s }: { label: string; value: number; co
   );
 }
 
-function EmptyState({ s }: { s: any }) {
+function EmptyState({ s, mod }: { s: any; mod?: string }) {
   return (
     <View style={s.empty}>
       <View style={s.emptyBox}><Text style={s.emptyIcon}>⚖</Text></View>
       <Text style={s.emptyTitle}>Henüz kayıt yok</Text>
-      <Text style={s.emptySub}>Başvurular sekmesinden yeni dosya oluşturun.</Text>
+      <Text style={s.emptySub}>{mod === 'avukat' ? 'Dosyalar' : 'Başvurular'} sekmesinden yeni dosya oluşturun.</Text>
     </View>
   );
 }
