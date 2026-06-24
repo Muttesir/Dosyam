@@ -58,12 +58,23 @@ export default function HomeScreen() {
             'Tüm verileriniz kalıcı olarak silinecek. Bu işlem geri alınamaz.',
             [
               {
-                text: 'Evet, Sil', style: 'destructive', onPress: async () => {
-                  try {
-                    await deleteAccount();
-                  } catch (e: any) {
-                    Alert.alert('Hata', e?.message ?? 'Hesap silinemedi. Lütfen tekrar giriş yapıp deneyin.');
-                  }
+                text: 'Devam Et', style: 'destructive', onPress: () => {
+                  Alert.prompt(
+                    'Şifrenizi Girin',
+                    'Hesabı silmek için şifrenizi doğrulayın.',
+                    async (password) => {
+                      if (!password) return;
+                      try {
+                        await deleteAccount(password);
+                      } catch (e: any) {
+                        const msg = e?.code === 'auth/wrong-password' || e?.code === 'auth/invalid-credential'
+                          ? 'Şifre hatalı. Lütfen tekrar deneyin.'
+                          : (e?.message ?? 'Hesap silinemedi.');
+                        Alert.alert('Hata', msg);
+                      }
+                    },
+                    'secure-text'
+                  );
                 },
               },
               { text: 'İptal', style: 'cancel' },

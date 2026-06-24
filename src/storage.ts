@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
-import { deleteUser } from 'firebase/auth';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { auth, db, uid } from './firebase';
 import { Basvuru, Sonuc } from './types';
 
@@ -125,7 +125,11 @@ export async function aktarToSonuc(
   await deleteBasvuru(basvuruId);
 }
 
-export async function deleteAccount(): Promise<void> {
+export async function deleteAccount(password: string): Promise<void> {
+  const user = auth.currentUser!;
+  const credential = EmailAuthProvider.credential(user.email!, password);
+  await reauthenticateWithCredential(user, credential);
+
   const basvurular = await getDocs(query(bCol(), orderBy('olusturma', 'desc')));
   await Promise.all(basvurular.docs.map(d => deleteDoc(doc(db, 'users', uid(), 'basvurular', d.id))));
 
@@ -133,5 +137,5 @@ export async function deleteAccount(): Promise<void> {
   await Promise.all(sonuclar.docs.map(d => deleteDoc(doc(db, 'users', uid(), 'sonuclar', d.id))));
 
   await AsyncStorage.clear();
-  await deleteUser(auth.currentUser!);
+  await deleteUser(user);
 }
