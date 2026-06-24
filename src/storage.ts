@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
-import { db, uid } from './firebase';
+import { deleteUser } from 'firebase/auth';
+import { auth, db, uid } from './firebase';
 import { Basvuru, Sonuc } from './types';
 
 const CACHE = { b: 'cache_basvurular', s: 'cache_sonuclar' };
@@ -122,4 +123,15 @@ export async function aktarToSonuc(
     ...(b.mahkeme ? { mahkeme: b.mahkeme } : {}),
   });
   await deleteBasvuru(basvuruId);
+}
+
+export async function deleteAccount(): Promise<void> {
+  const basvurular = await getDocs(query(bCol(), orderBy('olusturma', 'desc')));
+  await Promise.all(basvurular.docs.map(d => deleteDoc(doc(db, 'users', uid(), 'basvurular', d.id))));
+
+  const sonuclar = await getDocs(query(sCol(), orderBy('olusturma', 'desc')));
+  await Promise.all(sonuclar.docs.map(d => deleteDoc(doc(db, 'users', uid(), 'sonuclar', d.id))));
+
+  await AsyncStorage.clear();
+  await deleteUser(auth.currentUser!);
 }

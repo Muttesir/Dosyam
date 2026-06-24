@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { signOut } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../firebase';
-import { getBasvurular, getSonuclar } from '../storage';
+import { getBasvurular, getSonuclar, deleteAccount } from '../storage';
 import { Basvuru, Sonuc } from '../types';
 import {
   F, DURUM_LABEL, AVUKAT_DURUM_LABEL, getDurumBadge, getOdemeBadge,
@@ -49,6 +49,26 @@ export default function HomeScreen() {
         text: 'Çıkış Yap', style: 'destructive', onPress: async () => {
           await AsyncStorage.clear();
           signOut(auth);
+        },
+      },
+      {
+        text: 'Hesabı Sil', style: 'destructive', onPress: () => {
+          Alert.alert(
+            'Hesabı Sil',
+            'Tüm verileriniz kalıcı olarak silinecek. Bu işlem geri alınamaz.',
+            [
+              {
+                text: 'Evet, Sil', style: 'destructive', onPress: async () => {
+                  try {
+                    await deleteAccount();
+                  } catch (e: any) {
+                    Alert.alert('Hata', e?.message ?? 'Hesap silinemedi. Lütfen tekrar giriş yapıp deneyin.');
+                  }
+                },
+              },
+              { text: 'İptal', style: 'cancel' },
+            ]
+          );
         },
       },
       { text: 'İptal', style: 'cancel' },
